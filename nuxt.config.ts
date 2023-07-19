@@ -78,7 +78,8 @@ export default defineNuxtConfig({
   ],
 
   nitro: {
-    preset: 'vercel'
+    // preset: 'vercel',
+    // serverStatic: 'node'
   },
 
   srcDir: 'src/',
