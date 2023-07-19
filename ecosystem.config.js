@@ -1,7 +1,7 @@
 module.exports = {
   apps: [
     {
-      name: 'New Escophotos',
+      name: 'Reddot CRM V2',
       exec_mode: 'cluster',
       instances: '1', // Or a number of instances
       script: './.output/server/index.mjs',
