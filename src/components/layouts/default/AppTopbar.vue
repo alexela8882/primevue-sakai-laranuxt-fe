@@ -1,9 +1,18 @@
-<script lang="ts">
+<script>
 export default {
   emits: ['topbar-menu-toggle', 'menu-toggle'],
+  data () {
+    return {
+      
+    }
+  },
   computed: {
     darkTheme() {
       return this.$appState.darkTheme;
+    },
+    sanctumAuth () {
+      const { $sanctumAuth } = useNuxtApp()
+      return $sanctumAuth
     }
   },
   methods: {
@@ -15,9 +24,12 @@ export default {
     },
     topbarImage() {
       return this.$appState.darkTheme ? '/images/logo-white.svg' : '/images/logo-dark.svg';
+    },
+    async logout () {
+      await this.sanctumAuth.logout() // logout user
     }
   }
-};
+}
 </script>
 
 <template>
@@ -44,6 +56,12 @@ export default {
       <i class="pi pi-ellipsis-v" />
     </button>
     <ul class="layout-topbar-menu hidden lg:flex origin-top">
+      <li>
+        <button @click="logout" class="p-link layout-topbar-button">
+          <i class="pi pi-sign-out" />
+          <span>SignOut</span>
+        </button>
+      </li>
       <li>
         <button class="p-link layout-topbar-button">
           <i class="pi pi-calendar" />

@@ -1,7 +1,7 @@
 import { defineNuxtConfig } from 'nuxt/config';
 
 export default defineNuxtConfig({
-
+  ssr: false,
   app: {
     head: {
       meta: [
@@ -45,8 +45,24 @@ export default defineNuxtConfig({
     public: '../public/'
   },
 
+  nuxtSanctumAuth: {
+    baseUrl: 'http://backend.rdv2.es',
+    endpoints: {
+      csrf: '/sanctum/csrf-cookie',
+      login: '/api/login',
+      logout: '/api/logout',
+      user: '/api/user'
+    },
+    redirects: {
+      home: '/',
+      login: '/login',
+      logout: '/login'
+    }
+  },
+
   experimental: {
-    reactivityTransform: true
+    reactivityTransform: true,
+    inlineSSRStyles: false,
   },
 
   googleFonts: {
@@ -74,7 +90,8 @@ export default defineNuxtConfig({
     '@vue-macros/nuxt',
     'nuxt-typed-router',
     '@nuxtjs/google-fonts',
-    '~/modules/primevue'
+    'nuxt-sanctum-auth',
+    '~/modules/primevue',
   ],
 
   nitro: {

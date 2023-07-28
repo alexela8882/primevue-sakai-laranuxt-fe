@@ -1,5 +1,10 @@
 <script lang="ts" setup>
+
 import ProductService from '~~/services/ProductService';
+
+definePageMeta({
+  middleware: 'auth'
+});
 
 const productService = new ProductService();
 

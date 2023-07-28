@@ -12,6 +12,8 @@
     "lint:fix": "npm run lint --fix"
   },
   "dependencies": {
+    "@azure/msal-browser": "^2.38.0",
+    "nuxt-sanctum-auth": "^0.4.7",
     "pinia": "^2.0.34"
   },
   "devDependencies": {

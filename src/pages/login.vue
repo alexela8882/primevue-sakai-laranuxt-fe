@@ -1,15 +1,65 @@
-<script lang="ts" setup>
+<script setup>
+
+import * as msal from "@azure/msal-browser"
+
 definePageMeta({
+  middleware: 'guest',
   layout: 'empty'
 });
 
+// refs
+const { $sanctumAuth } = useNuxtApp()
 const { $appState } = useNuxtApp();
-
 const email = ref('');
 const password = ref('');
 const checked = ref(false);
-
 const logoColor = computed(() => ($appState.darkTheme ? 'white' : 'dark'));
+const form = ref({ username: "super@admin.com", password: "superadmin" })
+
+const msalConfig = {
+  auth: {
+    clientId: 'e028f6b9-6fbb-443a-a5c9-5e8f306e4dec',
+    authority: 'https://login.microsoftonline.com/{ee2fc0c6-4a49-4dfe-bcd0-a9b735f30129}',
+    redirectUri: 'http://localhost:8000/api/azure/callback'
+  }
+}
+
+const msalInstance = new msal.PublicClientApplication(msalConfig)
+await msalInstance.initialize()
+
+const login = async () => {
+  console.log("test login")
+  console.log(form.value)
+  try {
+    await $sanctumAuth.login({
+      email: form.value.username,
+      password: form.value.password
+    })
+
+    console.log(form.value)
+  } catch (e) {
+    // your error handling
+    // errors.value = e.errors
+    console.log(e)
+  }
+}
+
+const azureLogin = async () => {
+  try {
+    const loginResponse = await msalInstance.loginPopup()
+  } catch (err) {
+    // handle error
+  }
+}
+
+const azureLoginExt = () => {
+  window.location = "http://localhost:8000/api/azure/redirect"
+}
+
+const azureLogout = async () => {
+  msalInstance.logoutPopup()
+}
+
 </script>
 
 <template>
@@ -32,7 +82,7 @@ const logoColor = computed(() => ($appState.darkTheme ? 'white' : 'dark'));
             <label for="email1" class="block text-900 text-xl font-medium mb-2">Email</label>
             <InputText
               id="email1"
-              v-model="email"
+              v-model="form.username"
               type="text"
               class="w-full mb-3"
               placeholder="Email"
@@ -42,7 +92,7 @@ const logoColor = computed(() => ($appState.darkTheme ? 'white' : 'dark'));
             <label for="password1" class="block text-900 font-medium text-xl mb-2">Password</label>
             <Password
               id="password1"
-              v-model="password"
+              v-model="form.password"
               placeholder="Password"
               :toggle-mask="true"
               class="w-full mb-3"
@@ -57,7 +107,10 @@ const logoColor = computed(() => ($appState.darkTheme ? 'white' : 'dark'));
               </div>
               <a class="font-medium no-underline ml-2 text-right cursor-pointer" style="color: var(--primary-color)">Forgot password?</a>
             </div>
-            <Button label="Sign In" class="w-full p-3 text-xl" />
+            <Button @click="login" label="Sign In" class="w-full p-3 text-xl" />
+            <Button @click="azureLogin" label="Sign In With Microsoft" class="w-full p-3 text-xl my-3" />
+            <Button @click="azureLoginExt" label="Sign In With Microsoft (External)" class="w-full p-3 text-xl my-3" />
+            <Button @click="azureLogout" label="Logout" class="w-full p-3 text-xl my-3" />
           </div>
         </div>
       </div>
